@@ -1,84 +1,59 @@
 # HEALTH APP
-## 01 STATIC HTML RENDERING
+## 02 HTML WITH REACT
 
-First, let’s set up a simple HTML page served by webpack dev server.
+This branch starts off at the end of the `01_STATIC_HTML_RENDERING` branch.
 
-We’ll call it “health-app”, a personal health app that tracks weight and health stats.
+Now let's add some JS to the project.
 
-`mkdir health-app`
+let's make a `src` directory for all of our source files.
 
-`cd health-app`
+`mkdir src`
 
-We’ll be using npm (and only npm) for package management. Let's initialize an NPM project.
+`mv index.html src/index.html`
 
-`npm init`
+`mkdir src/js`
 
-Enter through everything, the defaults are fine.
+`touch src/js/index.js`
 
+Now let's install our react related dependencies
 
-Next, let’s start by installing the dependencies we need.
-`webpack` is a build system that will package all of the JS and CSS file into single files.
-`webpack-dev-server` is an express server that will allow us to build and rebuild our assets in real time.
-`html-webpack-plugin` will allow us to specify an html page to render as the base of our single page application.
-Use the `--save-dev` flag to specify that these dependencies will only be used in development.
+`npm install --save react react-dom`
 
-`npm install --save-dev webpack webpack-dev-server html-webpack-plugin `
+- `react` is facebook's js framework. It's a great choice for making well-organized, component-based single paged apps.
+- `react-dom` is needed to run react on the web. (as opposed to mobile)
+- not that we're using `--save` here instead of `--save-dev`, as the production code will use react.
 
-We’ll need to make a config file so that `webpack` know what/how to build the project.
+Now, because we're in the future, and not all web browsers have caught up to us, we need to use `babel` which will compile the latest flavor of javascript (ES6, AKA ES2016) and REACT to more generic javascript that any browser can understand.
 
-`touch webpack.config.js`
+`npm install --save-dev babel-core babel-loader babel-preset-es2015 babel-preset-react`
 
-```
-var path = require("path");
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+Now we're ready to make our first React component!
 
-module.exports = {
-    output: {
-        path: __dirname + '/dist',
-        filename: 'index_bundle.js'
-    },
-    plugins: [new HtmlWebpackPlugin({template: 'index.html'})]
-};
+`touch src/js/Greeting.js`
 
 ```
+import React from 'react'
 
-Let’s take a look at what this file is doing.
-we need the `path` variable to specify paths in this file. (The `path` package is installed as a dependency of `webpack`, so we don’t have to nom install it separately)
-The `output` object specifies the location and name of the build artifact that will be built.
-The `HtmlWebpackPlugin` specifies the name of the HTML page to be rendered.
+function Greeting(props) {
+  return (
+    <div>Hola {props.name}!</div>
+  )
+}
 
-Now let’s make the `index.html` page we just specified above
-
-`touch index.html`
-```
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Health App</title>
-  </head>
-  <body>
-    <div id="health-app">
-      <h1>Hi there!</h1>
-    </div>
-  </body>
-</html>
+export default Greeting
 ```
 
-Now we can start our app by running `webpack-dev-server` and specifying the path to our output.
+next, let's replace the div that we had in `index.js` with the component we just made.
 
-`./node_modules/.bin/webpack-dev-server --content-base dist/ --port 8000"`
+```
+import React from 'react'
+import { render } from 'react-dom'
+import Greeting from './Greeting'
 
-To simplify this process, we can add this to our `package.json` under scripts.
+render(
+    <Greeting name={"Bob"}/>,
+    document.getElementById('health-app')
+)
+```
 
-```{
-  …
-  "scripts": {
-    "start": "./node_modules/.bin/webpack-dev-server --content-base dist/ --port 8000"
-  },
-  …
-}```
-
-Now we can start our server by just calling `npm start`
-Go to `http://localhost:8000` and you'll see the text "Hi there!"
+go back to 'http://localhost:8000' and you'll see our greeting has changed to 'Hola Bob'! Note that you don't have to rebuild your files to see the updated changes in the browser--webdriver does this for you automatically!
