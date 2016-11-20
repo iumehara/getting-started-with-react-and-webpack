@@ -15,9 +15,49 @@ let's make a `src` directory for all of our source files.
 
 `touch src/js/index.js`
 
-Update the webpack.config.js to reflect the new location of index.html
+Update webpack.config.js as per the following:
 
-`plugins: [new HtmlWebpackPlugin({template: '`**src/**`index.html'})]`
+```
+var path = require("path");
+var webpage = require("webpack");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+
+module.exports = {
+    entry: "./src/js/index.js",
+    output: {
+                path: __dirname + '/dist',
+                filename: 'index_bundle.js'
+            },
+    plugins: [new HtmlWebpackPlugin({template: './src/index.html'})],
+    module: {
+        loaders: [
+        {
+            test: /\.js$/,
+            exclude: /(node_modules)/,
+            loader: "babel-loader",
+            query: {
+                presets: ['es2015', 'react']
+            }
+        }
+        ]
+    }
+};
+```
+
+Remove the hard-coded header text in the ./src/index.html file to only contain:
+
+```
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Health App</title>
+    </head>
+    <body>
+        <div id="health-app"></div>
+    </body>
+</html>
+```
 
 Now let's install our react related dependencies
 
