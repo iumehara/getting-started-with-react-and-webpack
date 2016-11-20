@@ -68,7 +68,7 @@ Now let’s make the `index.html` page we just specified above
 
 Now we can start our app by running `webpack-dev-server` and specifying the path to our output.
 
-`./node_modules/.bin/webpack-dev-server --content-base dist/ --port 8000"`
+`./node_modules/.bin/webpack-dev-server --content-base dist/ --port 8000`
 
 To simplify this process, we can add this to our `package.json` under scripts.
 
