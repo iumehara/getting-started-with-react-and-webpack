@@ -15,6 +15,10 @@ let's make a `src` directory for all of our source files.
 
 `touch src/js/index.js`
 
+Update the webpack.config.js to reflect the new location of index.html
+
+`plugins: [new HtmlWebpackPlugin({template: '`**src/**`index.html'})]`
+
 Now let's install our react related dependencies
 
 `npm install --save react react-dom`
