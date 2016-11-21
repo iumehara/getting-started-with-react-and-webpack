@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
-import Greeting from './Greeting'
+import TodoListPage from './TodoListPage'
 
 render(
-    <Greeting name={"Bob"}/>,
+    <TodoListPage />,
     document.getElementById('health-app')
 )

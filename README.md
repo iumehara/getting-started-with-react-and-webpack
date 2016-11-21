@@ -1,59 +1,121 @@
 # HEALTH APP
-## 02 HTML WITH REACT
+## 03 RENDERING MULTIPLE REACT COMPNENTS
 
-This branch starts off at the end of the `01_STATIC_HTML_RENDERING` branch.
+This branch starts off at the end of the `02_HTML_WITH_REACT` branch.
 
-Now let's add some JS to the project.
+Let's try working with some react.
 
-let's make a `src` directory for all of our source files.
+first, let's replace the `Greetings` component with a new `TodoListPage` component.
 
-`mkdir src`
-
-`mv index.html src/index.html`
-
-`mkdir src/js`
-
-`touch src/js/index.js`
-
-Now let's install our react related dependencies
-
-`npm install --save react react-dom`
-
-- `react` is facebook's js framework. It's a great choice for making well-organized, component-based single paged apps.
-- `react-dom` is needed to run react on the web. (as opposed to mobile)
-- not that we're using `--save` here instead of `--save-dev`, as the production code will use react.
-
-Now, because we're in the future, and not all web browsers have caught up to us, we need to use `babel` which will compile the latest flavor of javascript (ES6, AKA ES2016) and REACT to more generic javascript that any browser can understand.
-
-`npm install --save-dev babel-core babel-loader babel-preset-es2015 babel-preset-react`
-
-Now we're ready to make our first React component!
-
-`touch src/js/Greeting.js`
-
-```
-import React from 'react'
-
-function Greeting(props) {
-  return (
-    <div>Hola {props.name}!</div>
-  )
-}
-
-export default Greeting
-```
-
-next, let's replace the div that we had in `index.js` with the component we just made.
-
+`index.js`
 ```
 import React from 'react'
 import { render } from 'react-dom'
-import Greeting from './Greeting'
+import TodoListPage from './TodoListPage'
 
 render(
-    <Greeting name={"Bob"}/>,
+    <TodoListPage />,
     document.getElementById('health-app')
 )
 ```
 
-go back to 'http://localhost:8000' and you'll see our greeting has changed to 'Hola Bob'! Note that you don't have to rebuild your files to see the updated changes in the browser--webdriver does this for you automatically!
+`ToDoListPage.js`
+```
+import React from 'react'
+
+class TodoListPage extends React.Component {
+  constructor(props) {
+     super(props)
+     this.state = {
+       todoList: [
+         {id: 1, assignDate: "11/1/2016", dueDate: "11/5/2016", task: "Buy Groceries" },
+         {id: 2, assignDate: "11/2/2016", dueDate: "11/7/2016", task: "Clean the bathroom" },
+         {id: 3, assignDate: "11/3/2016", dueDate: "11/4/2016", task: "Get Beer" },
+         {id: 4, assignDate: "11/4/2016", dueDate: "11/6/2016", task: "Fix the kitchen faucet" }
+       ],
+       display: false
+     }
+  }
+
+  render() {
+    let todos = this.state.todoList.map(todo => {
+        return(
+          <div key={todo.id}>
+            <div>
+              <h2>{todo.task}</h2>
+              <div>Assigned: {todo.assignDate}</div>
+              <div>Due: {todo.dueDate}</div>
+              <br/>
+            </div>
+          </div>
+        )
+    })
+
+    return (
+      <div>
+        <h1>To Dos</h1>
+        {todos}
+      </div>
+    )
+  }
+}
+
+export default TodoListPage
+```
+
+wow, what's happening here?
+
+First, the consructor function sets the props (immutable data in the component, which is fed in from its parent component), and the state (mutable data in the component). In this case, because we don't have a database, we're just going to hard code some data into the state when the component mounts.
+
+The render function defines what will be rendered onto the page.
+In this case, we are mapping through the todos that we assigned to the state above, and returning the result in a `div` under the `h1` To Dos header.
+
+You'll notice that the `render` method is reusing the same component for every todoList item.
+
+Let's extract it into it's own compnent.
+
+`Todo.js`
+```
+import React from 'react'
+
+function Todo(props) {
+  return (
+    <div>
+      <h2>{props.data.task}</h2>
+      <div>Assigned: {props.data.assignDate}</div>
+      <div>Due: {props.data.dueDate}</div>
+      <br/>
+    </div>
+  )
+}
+
+export default Todo
+```
+
+By doing this, we can now use this in the map method from before.
+`TodoListPage.js`
+```
+import React from 'react'
+import Todo from './Todo'
+
+class TodoListPage extends React.Component {
+  // constructor code unchanged from before
+  render() {
+    let todos = this.state.todoList.map(todo => {
+        return(
+          <div key={todo.id}>
+            <Todo data={todo}/>
+          </div>
+        )
+    })
+
+    return (
+      <div>
+        <h1>To Dos</h1>
+        {todos}
+      </div>
+    )
+  }
+```
+
+Much cleaner!
