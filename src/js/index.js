@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
-import TodoListPage from './TodoListPage'
+import MovieRatingListPage from './MovieRatingListPage'
 
 render(
-    <TodoListPage />,
+    <MovieRatingListPage />,
     document.getElementById('health-app')
 )
